@@ -4,7 +4,7 @@ module.exports = (env, argv) => {
   return {
     mode: "production",
     entry: {
-      index: path.join(__dirname, "index.ts")
+      index: path.join(__dirname, "src", "index.ts")
     },
     output: {
       path: path.join(__dirname, "www"),
@@ -19,6 +19,10 @@ module.exports = (env, argv) => {
           use: [{ loader: "ts-loader" }]
         }
       ]
+    },
+    resolve: {
+      extensions: [".ts", ".js"],
+      modules: ["node_modules"]
     }
   };
 };
