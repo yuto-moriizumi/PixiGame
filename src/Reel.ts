@@ -25,7 +25,6 @@ export default class Reel extends PIXI.Container {
     this.previousIndex = this.index;
     for (let i = 0; i < this.children.length; i++) {
       const symbol = this.children[i] as PIXI.Sprite;
-      symbol.texture;
       if (!symbol.texture) continue;
       const prevY = symbol.y;
       symbol.y =
