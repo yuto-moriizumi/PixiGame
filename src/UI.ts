@@ -1,8 +1,12 @@
 import * as PIXI from "pixi.js";
 import SlotGame from "./SlotGame";
 import Reel from "./Reel";
+import Tween from "./Tween";
 
 export default class UI extends PIXI.Container {
+  private reelsRunning: boolean = false;
+  private reelContainer!: PIXI.Container;
+
   public static readonly defaultTextStyle: PIXI.TextStyle = new PIXI.TextStyle({
     fontFamily: "Arial",
     fontSize: 36,
@@ -19,7 +23,7 @@ export default class UI extends PIXI.Container {
     wordWrap: true,
     wordWrapWidth: 440
   });
-  private reelContainer!: PIXI.Container;
+
   constructor() {
     super();
     const margin = (SlotGame.height - Reel.SYMBOL_SIZE * 3) / 2;
@@ -60,6 +64,37 @@ export default class UI extends PIXI.Container {
     coverBottom.buttonMode = true;
     coverBottom.addListener("pointerdown", () => this.startPlay());
   }
-  public startPlay(): void {}
-  public update(): void {}
+  public startPlay(): void {
+    if (this.reelsRunning) return;
+    this.reelsRunning = true;
+    for (let i = 0; i < this.reelContainer.children.length; i++) {
+      const reel = this.reelContainer.children[i] as Reel;
+      if (!reel.update) continue;
+      const extra = Math.floor(Math.random() * 3);
+      const target = reel.index + 10 + i * 5 + extra;
+      const time = 2500 + i * 600 + extra * 600;
+      const tween = new Tween(
+        reel,
+        "index",
+        target,
+        time,
+        Tween.backout(0.5),
+        null,
+        i === this.reelContainer.children.length - 1
+          ? () => {
+              this.reelsRunning = false;
+            }
+          : null
+      );
+      Tween.tweening.push(tween);
+    }
+  }
+  public update(): void {
+    for (const i of this.reelContainer.children) {
+      const reel = i as Reel;
+      if (!reel.update) continue;
+      reel.update();
+    }
+    Tween.update();
+  }
 }

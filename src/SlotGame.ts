@@ -18,15 +18,19 @@ export default class SlotGame {
       backgroundColor: 0x1099bb
     });
     document.body.appendChild(this.app.view);
+
+    //画像のロード処理
     for (const resource of SlotGame.resources) {
       this.app.loader.add(resource);
     }
     this.app.loader.load(() => {
+      //終わったら
       this.ui = new UI();
       this.onReady();
     });
   }
   public start(): void {
+    //ゲーム開始
     if (!this.ui) {
       this.onReady = () => this.start();
       return;
