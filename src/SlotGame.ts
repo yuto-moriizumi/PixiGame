@@ -4,7 +4,10 @@ import * as PIXI from "pixi.js";
 export default class SlotGame {
   public static readonly width: number = 800;
   public static readonly height: number = 640;
-  public static readonly resources: string[] = ["./brazil.png"];
+  public static readonly resources: string[] = [
+    "./brazil.png",
+    "./provinces.png",
+  ];
   private app!: PIXI.Application;
   private ui!: UI;
   private onReady: () => void = () => {};
@@ -15,7 +18,7 @@ export default class SlotGame {
     this.app = new PIXI.Application({
       width: SlotGame.width,
       height: SlotGame.height,
-      backgroundColor: 0x1099bb
+      backgroundColor: 0x1099bb,
     });
     document.body.appendChild(this.app.view);
 
@@ -36,6 +39,9 @@ export default class SlotGame {
       return;
     }
     this.app.stage.addChild(this.ui);
+    this.app.stage.addChild(
+      new PIXI.Sprite(PIXI.Texture.from(SlotGame.resources[1]))
+    );
     this.app.ticker.add(() => {
       this.ui.update();
     });
